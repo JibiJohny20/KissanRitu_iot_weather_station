@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KissanRitu · </title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ═══════════════════════════ THEME VARIABLES ═══════════════════════════ */
+:root,[data-theme="light"]{
+  --bg:#faf8f4;--bg2:#f2ede4;--bg3:#fff;
+  --card:rgba(255,255,255,0.83);--card-border:rgba(255,255,255,0.72);
+  --text:#1a2e1b;--text2:#374151;--text3:#6b7280;--text4:#9ca3af;
+  --divider:rgba(0,0,0,0.06);
+  --shd:0 2px 12px rgba(0,0,0,0.07);--shd2:0 8px 32px rgba(0,0,0,0.12);
+  --inp-bg:#fff;--inp-border:rgba(0,0,0,0.11);--inp-text:#374151;
+  --tbl-hover:rgba(76,175,80,0.04);
+  --g1:#e8f5e9;--g0:#f1f8e9;--g7:#2e7d32;
+}
+[data-theme="dark"]{
+  --bg:#0f1a12;--bg2:#162119;--bg3:#1e2d20;
+  --card:rgba(30,45,32,0.92);--card-border:rgba(76,175,80,0.12);
+  --text:#e2f0e4;--text2:#c8deca;--text3:#8aab8e;--text4:#5a7a5e;
+  --divider:rgba(255,255,255,0.06);
+  --shd:0 2px 14px rgba(0,0,0,0.4);--shd2:0 8px 36px rgba(0,0,0,0.5);
+  --inp-bg:#243026;--inp-border:rgba(76,175,80,0.2);--inp-text:#c8deca;
+  --tbl-hover:rgba(76,175,80,0.07);
+  --g1:rgba(46,125,50,0.18);--g0:rgba(46,125,50,0.1);--g7:#66bb6a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;transition:background .3s,color .3s;}
+#sb{width:218px;min-width:218px;background:linear-gradient(170deg,#1b4332 0%,#143322 55%,#0c1f14 100%);display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,0.3);z-index:200;position:relative;overflow:hidden;}
+#sb::after{content:'';position:absolute;top:-80px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(76,175,80,0.12),transparent 70%);pointer-events:none;}
+.sbl{padding:24px 20px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.lf{width:32px;height:32px;background:linear-gradient(135deg,#4caf50,#66bb6a);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 0 18px rgba(76,175,80,0.55);animation:lp 3s ease-in-out infinite;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.lf::after{content:'';width:2px;height:12px;background:rgba(255,255,255,0.7);border-radius:2px;transform:rotate(45deg);}
+@keyframes lp{0%,100%{box-shadow:0 0 18px rgba(76,175,80,0.5);transform:rotate(-45deg) scale(1);}50%{box-shadow:0 0 28px rgba(76,175,80,0.85);transform:rotate(-45deg) scale(1.07);}}
+.sbbr{color:#fff;font-weight:600;font-size:12.5px;line-height:1.3;}
+.sbbr span{color:#66bb6a;font-size:9px;font-weight:400;display:block;margin-top:1px;}
+.sbnav{padding:10px 0;flex:1;}
+.sbs{padding:9px 20px 3px;font-size:9px;font-weight:700;color:rgba(255,255,255,0.22);text-transform:uppercase;letter-spacing:1.2px;}
+.ni{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,0.52);cursor:pointer;font-size:12.5px;font-weight:400;border-left:3px solid transparent;transition:all 0.17s;user-select:none;}
+.ni:hover{color:#fff;background:rgba(255,255,255,0.06);border-left-color:rgba(255,255,255,0.2);}
+.ni.active{color:#fff;background:rgba(76,175,80,0.17);border-left-color:#66bb6a;font-weight:500;}
+.ni.active svg{filter:drop-shadow(0 0 6px rgba(76,175,80,0.9));}
+.ni svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.9;opacity:.9;}
+.ni .bdg{margin-left:auto;background:#ef4444;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.sbft{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.06);font-size:10px;color:rgba(255,255,255,0.26);line-height:1.7;}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+#hdr{position:relative;height:70px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:linear-gradient(130deg,#1a4a2a,#2d6a4f 45%,#1b5e35 75%,#0f3d22);z-index:0;}
+.hbg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 90% at 15% 50%,rgba(76,175,80,0.28),transparent 60%),radial-gradient(ellipse 30% 70% at 85% 30%,rgba(255,210,80,0.1),transparent 50%);}
+.hgl{position:absolute;inset:0;backdrop-filter:blur(1px);background:rgba(0,0,0,0.13);z-index:1;}
+.hco{position:relative;z-index:2;}
+.hco h1{font-size:18px;font-weight:600;color:#fff;letter-spacing:-.3px;}
+.hco p{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;}
+.hri{position:relative;z-index:2;display:flex;align-items:center;gap:14px;}
+.lpill{display:flex;align-items:center;gap:6px;background:rgba(76,175,80,0.22);border:1px solid rgba(76,175,80,0.42);border-radius:20px;padding:5px 12px;color:#a5d6a7;font-size:11px;font-weight:500;}
+.ldot{width:7px;height:7px;background:#4caf50;border-radius:50%;box-shadow:0 0 8px rgba(76,175,80,0.9);animation:bk 1.6s ease-in-out infinite;}
+@keyframes bk{0%,100%{opacity:1;}50%{opacity:.2;}}
+.hclk{color:rgba(255,255,255,0.75);font-family:'DM Mono',monospace;font-size:13px;}
+.hdat{color:rgba(255,255,255,0.38);font-size:10.5px;}
+.page{display:none;flex:1;overflow-y:auto;height:calc(100vh - 70px);}
+.page.active{display:block;}
+.pi{padding:24px 26px 42px;}
+.stit{font-size:10.5px;font-weight:700;color:var(--g7);text-transform:uppercase;letter-spacing:1.1px;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+.stit::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(46,125,50,0.14),transparent);}
+.gc{background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--card-border);border-radius:16px;box-shadow:var(--shd);transition:box-shadow .2s,transform .2s,background .3s;}
+.gc:hover{box-shadow:var(--shd2);transform:translateY(-2px);}
+.dg{display:grid;grid-template-columns:1fr 292px;gap:20px;}
+.dl{display:flex;flex-direction:column;gap:18px;}
+.dr{display:flex;flex-direction:column;gap:14px;}
+.sr6{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.sc{padding:15px 14px 12px;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;}
+.s-temp::before{background:linear-gradient(90deg,#ef4444,#f97316);}
+.s-hum::before{background:linear-gradient(90deg,#3b82f6,#06b6d4);}
+.s-pres::before{background:linear-gradient(90deg,#8b5cf6,#a855f7);}
+.s-co2::before{background:linear-gradient(90deg,#f59e0b,#ef4444);}
+.s-aqi::before{background:linear-gradient(90deg,#6366f1,#8b5cf6);}
+.s-lux::before{background:linear-gradient(90deg,#eab308,#f97316);}
+.sci{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:9px;}
+.s-temp .sci{background:rgba(239,68,68,0.12);animation:gR 2.5s ease-in-out infinite;}
+.s-hum  .sci{background:rgba(59,130,246,0.12);animation:gB 3s ease-in-out infinite;}
+.s-pres .sci{background:rgba(139,92,246,0.12);}
+.s-co2  .sci{background:rgba(245,158,11,0.12);}
+.s-aqi  .sci{background:rgba(99,102,241,0.12);}
+.s-lux  .sci{background:rgba(234,179,8,0.12);animation:gY 2s ease-in-out infinite;}
+@keyframes gR{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0)}50%{box-shadow:0 0 12px rgba(239,68,68,0.35)}}
+@keyframes gB{0%,100%{box-shadow:0 0 0 rgba(59,130,246,0)}50%{box-shadow:0 0 12px rgba(59,130,246,0.35)}}
+@keyframes gY{0%,100%{box-shadow:0 0 0 rgba(234,179,8,0)}50%{box-shadow:0 0 12px rgba(234,179,8,0.4)}}
+.sclb{font-size:10px;color:var(--text3);font-weight:500;margin-bottom:2px;}
+.scv{font-size:22px;font-weight:600;line-height:1;margin-bottom:6px;font-family:'DM Mono',monospace;}
+.s-temp .scv{color:#dc2626;}.s-hum .scv{color:#2563eb;}.s-pres .scv{color:#7c3aed;}.s-co2 .scv{color:#d97706;}.s-aqi .scv{color:#4f46e5;}.s-lux .scv{color:#a16207;}
+.scu{font-size:10px;font-weight:400;color:var(--text4);}
+.sbg{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;}
+.bss{background:rgba(34,197,94,0.13);color:#15803d;}
+.bnn{background:rgba(59,130,246,0.11);color:#1d4ed8;}
+.bww{background:rgba(245,158,11,0.13);color:#b45309;}
+.bcc{background:rgba(239,68,68,0.12);color:#b91c1c;animation:bpp 1.3s ease-in-out infinite;}
+@keyframes bpp{0%,100%{opacity:1}50%{opacity:.5}}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.cc{padding:14px 14px 11px;}
+.cch{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cct{font-size:12px;font-weight:600;color:var(--text);}
+.ccs{font-size:10px;color:var(--text4);margin-top:1px;}
+.ccp{font-size:10px;background:var(--g1);color:var(--g7);padding:2px 8px;border-radius:20px;font-weight:500;}
+.cw{height:100px;}
+.ah{background:linear-gradient(135deg,rgba(239,68,68,0.07),rgba(245,158,11,0.04));border:1.5px solid rgba(239,68,68,0.22);border-radius:16px;padding:16px 15px;box-shadow:0 0 0 4px rgba(239,68,68,0.05),var(--shd);position:relative;overflow:hidden;}
+.ah::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ef4444,#f97316,#eab308);border-radius:16px 16px 0 0;}
+.ahh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+.ahht{font-size:10.5px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:1px;}
+.ahcnt{background:#ef4444;color:#fff;font-size:9px;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(239,68,68,0.5);animation:bpp 1.5s ease-in-out infinite;}
+.ait{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.ait:last-child{border-bottom:none;padding-bottom:0;}
+.aiic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.aic .aiic{background:rgba(239,68,68,0.11);animation:aap 1.5s ease-in-out infinite;}
+.aiw .aiic{background:rgba(245,158,11,0.11);}
+@keyframes aap{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0)}50%{box-shadow:0 0 10px rgba(239,68,68,0.45)}}
+.ain{font-size:11.5px;font-weight:600;color:#1a2e1b;}
+.aitrow{display:flex;align-items:center;gap:5px;margin-bottom:2px;}
+.ptt{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;text-transform:uppercase;}
+.ptc{background:rgba(239,68,68,0.14);color:#b91c1c;}
+.ptw{background:rgba(245,158,11,0.14);color:#b45309;}
+.pti{background:rgba(59,130,246,0.12);color:#1d4ed8;}
+.aid{font-size:10.5px;color:#6b7280;line-height:1.4;}
+.aitm{font-size:9.5px;color:#9ca3af;margin-top:3px;}
+.sump{padding:14px;}
+.sumr{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--divider);font-size:11.5px;}
+.sumr:last-child{border-bottom:none;}
+.sumk{color:var(--text3);}
+.sumv{font-weight:600;font-family:'DM Mono',monospace;font-size:12px;}
+.fcp{padding:14px;}
+.fr{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;padding:6px 0;border-bottom:1px solid var(--divider);}
+.fr:last-child{border-bottom:none;}
+.fd{color:var(--text3);width:66px;}
+.frb{flex:1;height:4px;background:var(--divider);border-radius:4px;margin:0 8px;overflow:hidden;}
+.frf{height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#06b6d4);}
+.ft{font-family:'DM Mono',monospace;font-weight:600;font-size:11.5px;}
+.spg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.sdc{padding:18px;}
+.sdch{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sdci{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.sdcn{font-size:13.5px;font-weight:600;color:var(--text);}
+.sdcnd{font-size:10.5px;color:var(--text4);}
+.sdcv{font-size:32px;font-weight:600;font-family:'DM Mono',monospace;margin-bottom:6px;}
+.sdcg{height:5px;background:var(--divider);border-radius:6px;overflow:hidden;margin-bottom:11px;}
+.sdcgf{height:100%;border-radius:6px;transition:width .6s ease;}
+.sdcs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.sdcst{text-align:center;padding:7px;background:rgba(0,0,0,0.03);border-radius:8px;}
+[data-theme="dark"] .sdcst{background:rgba(255,255,255,0.04);}
+.sdcstv{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:600;color:var(--text);}
+.sdcstk{font-size:9.5px;color:var(--text4);margin-top:2px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{text-align:left;padding:9px 11px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid var(--divider);}
+td{padding:9px 11px;border-bottom:1px solid var(--divider);color:var(--text2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--tbl-hover);}
+.atop{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px;}
+.kc{padding:16px 15px;}
+.kl{font-size:10px;color:var(--text3);font-weight:500;margin-bottom:5px;}
+.kv{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;line-height:1;margin-bottom:4px;}
+.kt{font-size:11px;font-weight:500;}
+.kt.up{color:#15803d;}.kt.dn{color:#dc2626;}
+.acg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.acc{padding:18px 18px 14px;}
+.acch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.acct{font-size:12.5px;font-weight:600;color:var(--text);}
+.accs{font-size:10.5px;color:var(--text4);margin-top:2px;}
+.accp{font-size:10px;background:var(--g1);color:var(--g7);padding:2px 9px;border-radius:20px;font-weight:500;}
+.cwlg{height:155px;}
+.abot{display:grid;grid-template-columns:2fr 1fr;gap:14px;}
+.hmc{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-top:9px;}
+.hme{height:26px;border-radius:3px;}
+.hmlab{display:flex;justify-content:space-between;margin-top:3px;font-size:9px;color:var(--text4);}
+.dirc{padding:18px;}
+.dir{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.dirl{font-size:11px;width:68px;color:var(--text2);}
+.dirb{flex:1;height:7px;background:var(--divider);border-radius:8px;overflow:hidden;}
+.dirf{height:100%;border-radius:8px;}
+.dirv{font-size:11px;font-family:'DM Mono',monospace;font-weight:600;width:32px;text-align:right;}
+.alst{display:flex;flex-direction:column;gap:11px;}
+.acf{padding:15px 16px;border-radius:16px;background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--card-border);box-shadow:var(--shd);display:flex;gap:12px;align-items:flex-start;position:relative;overflow:hidden;}
+.acf.cr{border-left:4px solid #ef4444;box-shadow:0 0 0 3px rgba(239,68,68,0.07),var(--shd);}
+.acf.wn{border-left:4px solid #f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.06),var(--shd);}
+.acf.res{border-left:4px solid #3b82f6;opacity:.72;}
+.acfi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.acftit{font-size:13px;font-weight:600;color:var(--text);}
+.acfdes{font-size:11.5px;color:var(--text3);line-height:1.5;}
+.acfft{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap;}
+.acftm{font-size:10px;color:var(--text4);}
+.acfnd{font-size:10px;background:var(--divider);padding:2px 7px;border-radius:7px;color:var(--text2);}
+.acfpulse{position:absolute;top:11px;right:13px;width:7px;height:7px;border-radius:50%;background:#ef4444;animation:aap 1.5s ease-in-out infinite;}
+.asc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px;}
+.astat{padding:13px;text-align:center;}
+.astn{font-size:24px;font-weight:600;font-family:'DM Mono',monospace;}
+.astl{font-size:10px;color:var(--text4);margin-top:2px;}
+.setg{display:grid;grid-template-columns:200px 1fr;gap:18px;}
+.setnav{display:flex;flex-direction:column;gap:3px;}
+.sni{padding:9px 13px;border-radius:9px;font-size:12.5px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:8px;transition:all .14s;}
+.sni:hover{background:var(--divider);}
+.sni.active{background:var(--g1);color:var(--g7);font-weight:500;}
+.sni svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
+.setcon{display:flex;flex-direction:column;gap:14px;}
+.setsec{padding:18px 20px;}
+.setsec h3{font-size:12.5px;font-weight:600;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--divider);color:var(--text);}
+.setr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--divider);}
+.setr:last-child{border-bottom:none;}
+.setrl{font-size:12.5px;color:var(--text2);}
+.setrd{font-size:10.5px;color:var(--text4);margin-top:2px;}
+.setrc input[type=text],.setrc input[type=number],.setrc select{padding:5px 9px;border:1px solid var(--inp-border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--inp-text);background:var(--inp-bg);outline:none;min-width:130px;transition:border-color .2s;}
+.setrc input:focus,.setrc select:focus{border-color:#4caf50;}
+.tsw{width:36px;height:19px;border-radius:10px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;}
+.tsw.on{background:#4caf50;}.tsw.off{background:#d1d5db;}
+[data-theme="dark"] .tsw.off{background:#3a4a3c;}
+.tsw::after{content:'';position:absolute;top:2.5px;width:14px;height:14px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:left .18s,right .18s;}
+.tsw.on::after{right:2.5px;}.tsw.off::after{left:2.5px;}
+.apply-btn{display:flex;align-items:center;justify-content:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--divider);}
+.btn-apply{background:linear-gradient(135deg,#2e7d32,#4caf50);color:#fff;border:none;padding:10px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(46,125,50,0.35);transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-apply:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,125,50,0.45);}
+.btn-apply:active{transform:scale(.97);}
+.theme-opts{display:flex;gap:8px;}
+.theme-opt{padding:5px 14px;border:1px solid var(--inp-border);border-radius:8px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--inp-bg);transition:all .15s;font-family:'DM Sans',sans-serif;}
+.theme-opt.active{border-color:#4caf50;background:var(--g1);color:var(--g7);font-weight:500;}
+.export-card{padding:20px;}
+.export-info{background:var(--g0);border:1px solid rgba(46,125,50,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.7;}
+.export-info strong{color:var(--g7);}
+.export-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.export-opt-card{padding:14px;border:1px solid var(--divider);border-radius:10px;cursor:pointer;transition:all .15s;}
+.export-opt-card:hover{border-color:#4caf50;background:var(--g1);}
+.export-opt-card.sel{border-color:#4caf50;background:var(--g1);}
+.export-opt-icon{font-size:22px;margin-bottom:6px;}
+.export-opt-title{font-size:12.5px;font-weight:600;color:var(--text);}
+.export-opt-desc{font-size:10.5px;color:var(--text4);margin-top:2px;}
+.btn-export{width:100%;background:linear-gradient(135deg,#2e7d32,#4caf50);color:#fff;border:none;padding:12px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(46,125,50,0.35);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-export:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,125,50,0.45);}
+.toast{position:fixed;bottom:24px;right:28px;background:#1b4332;color:#a5d6a7;padding:10px 18px;border-radius:10px;font-size:12.5px;font-weight:500;border:1px solid rgba(76,175,80,0.35);box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:9999;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:10px;}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+::-webkit-scrollbar-track{background:transparent;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<nav id="sb">
+  <div class="sbl"><div class="lf"></div><div class="sbbr">KissanRitu<span>Smart Agriculture Hub</span></div></div>
+  <div class="sbnav">
+    <div class="sbs">Main</div>
+    <div class="ni active" onclick="goPage('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</div>
+    <div class="ni" onclick="goPage('sensor',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>Sensor Data</div>
+    <div class="sbs">Insights</div>
+    <div class="ni" onclick="goPage('analytics',this)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analytics</div>
+    <div class="ni" onclick="goPage('alerts',this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>Alerts<span class="bdg" id="sb-alert-count">2</span></div>
+    <div class="sbs">Config</div>
+    <div class="ni" onclick="goPage('settings',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+  </div>
+  <div class="sbft">ESP32 · Node A6 · v2.4.1<br>Lohia Farms, Maharashtra</div>
+</nav>
+<div id="main">
+  <div id="hdr">
+    <div class="hbg"></div><div class="hgl"></div>
+    <div class="hco"><h1>🌿 Smart Agriculture Weather Station</h1><p> Where Seasons meet Smart Farming · ESP32 Sensor Network · Lohia Farms, Maharashtra</p></div>
+    <div class="hri"><div class="lpill"><div class="ldot"></div>LIVE</div><div><div class="hclk" id="clock">--:--:--</div><div class="hdat" id="cdate"></div></div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active"><div class="pi">
+    <div class="dg">
+      <div class="dl">
+        <div>
+          <div class="stit">📡 Live Sensor Readings</div>
+          <div class="sr6">
+            <div class="gc sc s-temp"><div class="sci">🌡️</div><div class="sclb">Temperature</div><div class="scv"><span id="v-temp">34.2</span><span class="scu"> °C</span></div><span class="sbg bcc" id="b-temp">⚠ High</span></div>
+            <div class="gc sc s-hum"><div class="sci">💧</div><div class="sclb">Humidity</div><div class="scv"><span id="v-hum">68</span><span class="scu"> %</span></div><span class="sbg bnn" id="b-hum">Normal</span></div>
+            <div class="gc sc s-pres"><div class="sci">🔵</div><div class="sclb">Air Pressure</div><div class="scv"><span id="v-pres">1013</span><span class="scu"> hPa</span></div><span class="sbg bss" id="b-pres">✔ Safe</span></div>
+            <div class="gc sc s-co2"><div class="sci">☁️</div><div class="sclb">CO₂ Level</div><div class="scv"><span id="v-co2">1420</span><span class="scu"> ppm</span></div><span class="sbg bcc" id="b-co2">⚡ Critical</span></div>
+            <div class="gc sc s-aqi"><div class="sci">🌬️</div><div class="sclb">AQI · PM2.5</div><div class="scv"><span id="v-aqi">87</span><span class="scu"> µg/m³</span></div><span class="sbg bww" id="b-aqi">⚠ Moderate</span></div>
+            <div class="gc sc s-lux"><div class="sci">☀️</div><div class="sclb">Ambient Light</div><div class="scv"><span id="v-lux">74.2</span><span class="scu"> klx</span></div><span class="sbg bss" id="b-lux">✔ Good</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="stit">📈 Analytics Overview</div>
+          <div class="cg2">
+            <div class="gc cc"><div class="cch"><div><div class="cct">Temperature</div><div class="ccs">Last 24 hours</div></div><span class="ccp">°C</span></div><div class="cw"><canvas id="c-temp"></canvas></div></div>
+            <div class="gc cc"><div class="cch"><div><div class="cct">Humidity</div><div class="ccs">Last 24 hours</div></div><span class="ccp">%</span></div><div class="cw"><canvas id="c-hum"></canvas></div></div>
+            <div class="gc cc"><div class="cch"><div><div class="cct">Air Quality Index</div><div class="ccs">PM2.5 µg/m³</div></div><span class="ccp">AQI</span></div><div class="cw"><canvas id="c-aqi"></canvas></div></div>
+            <div class="gc cc"><div class="cch"><div><div class="cct">CO₂ Levels</div><div class="ccs">Last 24 hours</div></div><span class="ccp">ppm</span></div><div class="cw"><canvas id="c-co2"></canvas></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="dr">
+        <div class="ah"><div class="ahh"><div class="ahht">⚡ Active Alerts</div><div class="ahcnt" id="dash-alert-cnt">2</div></div><div id="dash-active-alerts"></div></div>
+        <div class="gc sump">
+          <div class="stit" style="margin-bottom:11px;">📊 Station Summary</div>
+          <div class="sumr"><span class="sumk">Avg Temp (24h)</span><span class="sumv" style="color:#dc2626" id="sum-avgtemp">29.6 °C</span></div>
+          <div class="sumr"><span class="sumk">Max Humidity</span><span class="sumv" style="color:#2563eb">81 %</span></div>
+          <div class="sumr"><span class="sumk">Wind Speed</span><span class="sumv">12.4 km/h</span></div>
+          <div class="sumr"><span class="sumk">Rainfall Today</span><span class="sumv" style="color:#2563eb">3.2 mm</span></div>
+          <div class="sumr"><span class="sumk">UV Index</span><span class="sumv" style="color:#d97706">7.2</span></div>
+          <div class="sumr"><span class="sumk">Sensor Uptime</span><span class="sumv" style="color:#15803d">99.8 %</span></div>
+        </div>
+        <div class="gc fcp">
+          <div class="stit" style="margin-bottom:9px;">🌤 3-Day Forecast</div>
+          <div class="fr"><span class="fd">Today</span><span>☀️</span><div class="frb"><div class="frf" style="width:10%"></div></div><span class="ft">34/24°C</span></div>
+          <div class="fr"><span class="fd">Tomorrow</span><span>⛅</span><div class="frb"><div class="frf" style="width:35%"></div></div><span class="ft">31/22°C</span></div>
+          <div class="fr"><span class="fd">Day 3</span><span>🌧</span><div class="frb"><div class="frf" style="width:75%"></div></div><span class="ft">27/21°C</span></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- SENSOR DATA -->
+  <div id="page-sensor" class="page"><div class="pi">
+    <div class="stit">🔗 Node A6 Status — Main Orchard</div>
+    <div class="gc" style="padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;"><div style="width:12px;height:12px;border-radius:50%;background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.7);animation:bpp 2s ease-in-out infinite;flex-shrink:0;"></div><div><div style="font-size:13.5px;font-weight:600;color:var(--text)">Node A6 — Online</div><div style="font-size:11px;color:var(--text4);margin-top:1px;">Main Orchard · ESP32-S3 · Firmware v2.4.1</div></div></div>
+      <div style="margin-left:auto;display:flex;gap:20px;">
+        <div style="text-align:center;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:#15803d">99.8%</div><div style="font-size:10px;color:var(--text4)">Uptime</div></div>
+        <div style="text-align:center;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)">12ms</div><div style="font-size:10px;color:var(--text4)">Ping</div></div>
+        <div style="text-align:center;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)">30s</div><div style="font-size:10px;color:var(--text4)">Interval</div></div>
+        <div style="text-align:center;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;color:#d97706">87%</div><div style="font-size:10px;color:var(--text4)">Battery</div></div>
+      </div>
+    </div>
+    <div class="stit">📡 Sensor Readings — Node A6</div>
+    <div class="spg">
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(239,68,68,0.1)">🌡️</div><div><div class="sdcn">Temperature</div><div class="sdcnd">DHT22 · Channel 1</div></div></div><div class="sdcv" style="color:#dc2626" id="sd-temp">34.2<span style="font-size:16px;color:var(--text4)"> °C</span></div><div class="sdcg"><div class="sdcgf" id="g-temp" style="width:78%;background:linear-gradient(90deg,#4caf50,#f97316,#ef4444)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#3b82f6" id="min-temp">22.1</div><div class="sdcstk">Min °C</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626" id="max-temp">36.8</div><div class="sdcstk">Max °C</div></div><div class="sdcst"><div class="sdcstv" id="avg-temp">29.4</div><div class="sdcstk">Avg °C</div></div></div></div>
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(59,130,246,0.1)">💧</div><div><div class="sdcn">Humidity</div><div class="sdcnd">DHT22 · Channel 2</div></div></div><div class="sdcv" style="color:#2563eb" id="sd-hum">68<span style="font-size:16px;color:var(--text4)"> %</span></div><div class="sdcg"><div class="sdcgf" id="g-hum" style="width:68%;background:linear-gradient(90deg,#06b6d4,#3b82f6)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#3b82f6">42</div><div class="sdcstk">Min %</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626">81</div><div class="sdcstk">Max %</div></div><div class="sdcst"><div class="sdcstv">62</div><div class="sdcstk">Avg %</div></div></div></div>
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(245,158,11,0.1)">☁️</div><div><div class="sdcn">CO₂ / Gas Sensor</div><div class="sdcnd">MQ-135 · Channel 3</div></div></div><div class="sdcv" style="color:#d97706" id="sd-co2">1420<span style="font-size:16px;color:var(--text4)"> ppm</span></div><div class="sdcg"><div class="sdcgf" id="g-co2" style="width:85%;background:linear-gradient(90deg,#4caf50,#eab308,#ef4444)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#15803d">840</div><div class="sdcstk">Min</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626">1580</div><div class="sdcstk">Max</div></div><div class="sdcst"><div class="sdcstv">1145</div><div class="sdcstk">Avg</div></div></div></div>
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(139,92,246,0.1)">🔵</div><div><div class="sdcn">Barometric Pressure</div><div class="sdcnd">BMP280 · Channel 4</div></div></div><div class="sdcv" style="color:#7c3aed" id="sd-pres">1013<span style="font-size:16px;color:var(--text4)"> hPa</span></div><div class="sdcg"><div class="sdcgf" id="g-pres" style="width:55%;background:linear-gradient(90deg,#8b5cf6,#a855f7)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#3b82f6">1005</div><div class="sdcstk">Min hPa</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626">1021</div><div class="sdcstk">Max hPa</div></div><div class="sdcst"><div class="sdcstv">1012</div><div class="sdcstk">Avg hPa</div></div></div></div>
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(99,102,241,0.1)">🌬️</div><div><div class="sdcn">Air Quality PM2.5</div><div class="sdcnd">PMS5003 · Channel 5</div></div></div><div class="sdcv" style="color:#4f46e5" id="sd-aqi">87<span style="font-size:16px;color:var(--text4)"> µg/m³</span></div><div class="sdcg"><div class="sdcgf" id="g-aqi" style="width:58%;background:linear-gradient(90deg,#6366f1,#a855f7)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#15803d">22</div><div class="sdcstk">Min</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626">142</div><div class="sdcstk">Max</div></div><div class="sdcst"><div class="sdcstv">71</div><div class="sdcstk">Avg</div></div></div></div>
+      <div class="gc sdc"><div class="sdch"><div class="sdci" style="background:rgba(234,179,8,0.1)">☀️</div><div><div class="sdcn">Ambient Light</div><div class="sdcnd">BH1750 · Channel 6</div></div></div><div class="sdcv" style="color:#a16207" id="sd-lux">74.2<span style="font-size:16px;color:var(--text4)"> klx</span></div><div class="sdcg"><div class="sdcgf" id="g-lux" style="width:74%;background:linear-gradient(90deg,#eab308,#f97316)"></div></div><div class="sdcs"><div class="sdcst"><div class="sdcstv" style="color:#15803d">0.3</div><div class="sdcstk">Min klx</div></div><div class="sdcst"><div class="sdcstv" style="color:#dc2626">98.6</div><div class="sdcstk">Max klx</div></div><div class="sdcst"><div class="sdcstv">51.4</div><div class="sdcstk">Avg klx</div></div></div></div>
+    </div>
+    <div class="stit">📋 Raw Data Log — Last 12 Readings</div>
+    <div class="gc" style="overflow:auto;"><table><thead><tr><th>Timestamp</th><th>Temp °C</th><th>Hum %</th><th>CO₂ ppm</th><th>AQI µg/m³</th><th>Pressure hPa</th><th>Light klx</th><th>Status</th></tr></thead><tbody id="rtbl"></tbody></table></div>
+  </div></div>
+
+  <!-- ANALYTICS -->
+  <div id="page-analytics" class="page"><div class="pi">
+    <div class="atop">
+      <div class="gc kc"><div class="kl">Avg Temperature</div><div class="kv" style="color:#dc2626">29.6<span style="font-size:13px"> °C</span></div><div class="kt dn">↑ 2.3° vs yesterday</div></div>
+      <div class="gc kc"><div class="kl">Peak AQI Today</div><div class="kv" style="color:#4f46e5">142<span style="font-size:13px"> µg</span></div><div class="kt dn">↑ 18% worse than avg</div></div>
+      <div class="gc kc"><div class="kl">CO₂ Average</div><div class="kv" style="color:#d97706">1145<span style="font-size:13px"> ppm</span></div><div class="kt dn">↑ 340 above normal</div></div>
+      <div class="gc kc"><div class="kl">Sensor Uptime</div><div class="kv" style="color:#15803d">99.8<span style="font-size:13px">%</span></div><div class="kt up">↔ Stable</div></div>
+    </div>
+    <div class="stit">📈 7-Day Trend Analysis</div>
+    <div class="acg">
+      <div class="gc acc"><div class="acch"><div><div class="acct">Temperature Trend</div><div class="accs">Daily highs · 7 days</div></div><span class="accp">°C</span></div><div class="cwlg"><canvas id="ac-temp"></canvas></div></div>
+      <div class="gc acc"><div class="acch"><div><div class="acct">Humidity Profile</div><div class="accs">Relative humidity · 7 days</div></div><span class="accp">%</span></div><div class="cwlg"><canvas id="ac-hum"></canvas></div></div>
+      <div class="gc acc"><div class="acch"><div><div class="acct">Air Quality Index</div><div class="accs">PM2.5 · 7 days</div></div><span class="accp">AQI</span></div><div class="cwlg"><canvas id="ac-aqi"></canvas></div></div>
+      <div class="gc acc"><div class="acch"><div><div class="acct">CO₂ Concentration</div><div class="accs">ppm · 7 days</div></div><span class="accp">ppm</span></div><div class="cwlg"><canvas id="ac-co2"></canvas></div></div>
+    </div>
+    <div class="abot">
+      <div class="gc acc">
+        <div class="acch"><div><div class="acct">Light Intensity Heatmap</div><div class="accs">Solar irradiance by hour · today</div></div><span class="accp">klx</span></div>
+        <div class="hmc" id="hmc"></div>
+        <div class="hmlab"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
+        <div style="margin-top:12px;height:80px;"><canvas id="ac-light"></canvas></div>
+      </div>
+      <div class="gc dirc">
+        <div class="acct" style="margin-bottom:13px;">Temperature Distribution</div>
+        <div class="dir"><span class="dirl">Below 20°C</span><div class="dirb"><div class="dirf" style="width:8%;background:#3b82f6"></div></div><span class="dirv" style="color:#3b82f6">8%</span></div>
+        <div class="dir"><span class="dirl">20–25°C</span><div class="dirb"><div class="dirf" style="width:22%;background:#06b6d4"></div></div><span class="dirv" style="color:#06b6d4">22%</span></div>
+        <div class="dir"><span class="dirl">25–30°C</span><div class="dirb"><div class="dirf" style="width:38%;background:#4caf50"></div></div><span class="dirv" style="color:#4caf50">38%</span></div>
+        <div class="dir"><span class="dirl">30–35°C</span><div class="dirb"><div class="dirf" style="width:24%;background:#f97316"></div></div><span class="dirv" style="color:#f97316">24%</span></div>
+        <div class="dir"><span class="dirl">Above 35°C</span><div class="dirb"><div class="dirf" style="width:8%;background:#ef4444"></div></div><span class="dirv" style="color:#ef4444">8%</span></div>
+        <div style="height:1px;background:var(--divider);margin:13px 0;"></div>
+        <div class="acct" style="margin-bottom:10px;">Crop Health Score</div>
+        <div style="text-align:center;padding:8px 0;">
+          <div style="font-size:44px;font-weight:600;font-family:'DM Mono',monospace;color:#d97706;line-height:1;">72</div>
+          <div style="font-size:10.5px;color:var(--text4);margin-top:3px;">out of 100 · Moderate Risk</div>
+          <div style="margin-top:10px;height:7px;background:var(--divider);border-radius:8px;overflow:hidden;"><div style="width:72%;height:100%;background:linear-gradient(90deg,#4caf50,#eab308,#f97316);border-radius:8px;"></div></div>
+          <div style="font-size:10.5px;color:#b45309;margin-top:7px;">↑ Increase irrigation by 15%</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- ALERTS -->
+  <div id="page-alerts" class="page"><div class="pi">
+    <div class="asc">
+      <div class="gc astat"><div class="astn" style="color:#ef4444" id="cnt-critical">2</div><div class="astl">Critical Active</div></div>
+      <div class="gc astat"><div class="astn" style="color:#f59e0b" id="cnt-warning">0</div><div class="astl">Warnings Active</div></div>
+      <div class="gc astat"><div class="astn" style="color:#15803d" id="cnt-resolved">6</div><div class="astl">Resolved (session)</div></div>
+    </div>
+    <div class="stit">⚡ Active Alerts</div>
+    <div class="alst" id="active-alerts-list"></div>
+    <div class="stit" style="margin-top:18px;">✅ Resolved Alerts</div>
+    <div class="alst" id="resolved-alerts-list"></div>
+  </div></div>
+
+  <!-- SETTINGS -->
+  <div id="page-settings" class="page"><div class="pi">
+    <div class="setg">
+      <div>
+        <div class="stit">Settings</div>
+        <div class="setnav">
+          <div class="sni active" onclick="setST(this,'s-alert-rules')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>Alert Rules</div>
+          <div class="sni" onclick="setST(this,'s-display')"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Display</div>
+          <div class="sni" onclick="setST(this,'s-data')"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Data &amp; Export</div>
+        </div>
+      </div>
+      <div class="setcon">
+        <div id="s-alert-rules">
+          <div class="gc setsec">
+            <h3>Alert Threshold Configuration</h3>
+            <div class="setr"><div><div class="setrl">Temperature Warning (°C)</div><div class="setrd">Trigger warning badge when exceeded</div></div><div class="setrc"><input type="number" id="thr-temp-warn" value="30" min="0" max="60" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">Temperature Critical (°C)</div><div class="setrd">Trigger critical alert when exceeded</div></div><div class="setrc"><input type="number" id="thr-temp-crit" value="34" min="0" max="60" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">CO₂ Warning (ppm)</div><div class="setrd">Normal indoor CO₂ is 400–1000 ppm</div></div><div class="setrc"><input type="number" id="thr-co2-warn" value="1000" min="400" max="5000" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">CO₂ Critical (ppm)</div><div class="setrd">Trigger critical alert when exceeded</div></div><div class="setrc"><input type="number" id="thr-co2-crit" value="1400" min="400" max="5000" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">AQI Warning (µg/m³)</div><div class="setrd">WHO safe level is 15 µg/m³</div></div><div class="setrc"><input type="number" id="thr-aqi-warn" value="75" min="0" max="500" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">AQI Critical (µg/m³)</div><div class="setrd">Hazardous AQI level</div></div><div class="setrc"><input type="number" id="thr-aqi-crit" value="120" min="0" max="500" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">Humidity Min (%)</div><div class="setrd">Alert when humidity drops below</div></div><div class="setrc"><input type="number" id="thr-hum-min" value="40" min="0" max="100" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">Humidity Max (%)</div><div class="setrd">Alert when humidity exceeds</div></div><div class="setrc"><input type="number" id="thr-hum-max" value="85" min="0" max="100" style="width:80px;"></div></div>
+            <div class="setr"><div><div class="setrl">Pressure Min (hPa)</div><div class="setrd">Alert on low barometric pressure</div></div><div class="setrc"><input type="number" id="thr-pres-min" value="1000" min="900" max="1050" style="width:80px;"></div></div>
+            <div class="apply-btn"><button class="btn-apply" onclick="applyThresholds()">✓ Apply Alert Rules</button></div>
+          </div>
+        </div>
+        <div id="s-display" style="display:none">
+          <div class="gc setsec">
+            <h3>Display &amp; Appearance</h3>
+            <div class="setr"><div><div class="setrl">Dashboard Theme</div><div class="setrd">Changes the entire UI color scheme</div></div><div class="setrc"><div class="theme-opts"><div class="theme-opt active" id="theme-light" onclick="setTheme('light',this)">☀️ Light</div><div class="theme-opt" id="theme-dark" onclick="setTheme('dark',this)">🌙 Dark</div></div></div></div>
+            <div class="setr"><div><div class="setrl">Temperature Unit</div><div class="setrd">Affects all temperature displays</div></div><div class="setrc"><select id="set-unit-temp"><option value="C" selected>Celsius (°C)</option><option value="F">Fahrenheit (°F)</option></select></div></div>
+            <div class="setr"><div><div class="setrl">Pressure Unit</div></div><div class="setrc"><select><option selected>hPa</option><option>mbar</option><option>inHg</option></select></div></div>
+            <div class="setr"><div><div class="setrl">Chart Refresh Rate</div><div class="setrd">How often dashboard charts update</div></div><div class="setrc"><select><option>30 sec</option><option selected>1 min</option><option>5 min</option></select></div></div>
+            <div class="apply-btn"><button class="btn-apply" onclick="applyDisplay()">✓ Apply Display Settings</button></div>
+          </div>
+        </div>
+        <div id="s-data" style="display:none">
+          <div class="gc export-card">
+            <h3 style="font-size:12.5px;font-weight:600;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--divider);color:var(--text);">Data &amp; PDF Export</h3>
+            <div class="export-info">Export your sensor readings, alert history, and analytics as a <strong>structured PDF report</strong>. Each report type contains different sections tailored to its purpose.</div>
+            <div class="export-opts">
+              <div class="export-opt-card sel" id="exp-full" onclick="selectExport('full')"><div class="export-opt-icon">📊</div><div class="export-opt-title">Full Report</div><div class="export-opt-desc">Sensors + alerts + analytics + crop recommendations</div></div>
+              <div class="export-opt-card" id="exp-sensors" onclick="selectExport('sensors')"><div class="export-opt-icon">📡</div><div class="export-opt-title">Sensor Data Only</div><div class="export-opt-desc">Current readings + per-sensor cards + 24h history log</div></div>
+              <div class="export-opt-card" id="exp-alerts" onclick="selectExport('alerts')"><div class="export-opt-icon">⚡</div><div class="export-opt-title">Alerts Report</div><div class="export-opt-desc">Active + resolved alerts log with thresholds reference</div></div>
+              <div class="export-opt-card" id="exp-summary" onclick="selectExport('summary')"><div class="export-opt-icon">📋</div><div class="export-opt-title">Daily Summary</div><div class="export-opt-desc">Min / max / avg + hourly profile + events log</div></div>
+            </div>
+            <div class="setr" style="padding:9px 0;border-bottom:1px solid var(--divider);">
+              <div><div class="setrl">Data Retention Period</div><div class="setrd">Log history included in export</div></div>
+              <div class="setrc"><select id="exp-retention"><option value="24">Last 24 hours</option><option value="48">Last 48 hours</option><option value="168" selected>Last 7 days</option><option value="720">Last 30 days</option></select></div>
+            </div>
+            <div style="margin-top:18px;"><button class="btn-export" onclick="exportPDF()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF Report</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+<script>
+async function loadData() {
+    try {
+        const res = await fetch("/latest");
+        const data = await res.json();
+
+        console.log("REAL DATA:", data);
+
+        // DASHBOARD CARDS
+        document.getElementById("v-temp").innerText = data.temp;
+        document.getElementById("v-hum").innerText = data.humidity;
+        document.getElementById("v-pres").innerText = data.pressure;
+        document.getElementById("v-co2").innerText = data.co2;
+        document.getElementById("v-aqi").innerText = data.aqi;
+        document.getElementById("v-lux").innerText = data.lux;
+
+        // SENSOR PAGE
+        document.getElementById("sd-temp").childNodes[0].nodeValue = data.temp;
+        document.getElementById("sd-hum").childNodes[0].nodeValue = data.humidity;
+        document.getElementById("sd-pres").childNodes[0].nodeValue = data.pressure;
+        document.getElementById("sd-co2").childNodes[0].nodeValue = data.co2;
+        document.getElementById("sd-aqi").childNodes[0].nodeValue = data.aqi;
+        document.getElementById("sd-lux").childNodes[0].nodeValue = data.lux;
+
+        state.readings = {
+            temp: parseFloat(data.temp),
+            hum:  parseFloat(data.humidity),
+            pres: parseFloat(data.pressure),
+            co2:  parseFloat(data.co2),
+            aqi:  parseFloat(data.aqi),
+            lux:  parseFloat(data.lux)
+        };
+
+        // update alerts based on real data
+        reconcileAlerts(getAlertStatus(state.readings, state.thresholds));
+updateBadges(state.readings);
+updateCharts(data);
+updateRawTable();
+
+
+
+    } catch (err) {
+        console.error("Error fetching data:", err);
+    }
+}
+
+loadData();
+setInterval(loadData, 5000);
+
+</script>
+
+<script>
+// CLOCK
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=n.toLocaleTimeString('en-IN',{hour12:false});
+  document.getElementById('cdate').textContent=n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+}
+setInterval(tick,1000); tick();
+
+// PAGE ROUTING
+const PG={dashboard:'page-dashboard',sensor:'page-sensor',analytics:'page-analytics',alerts:'page-alerts',settings:'page-settings'};
+let aiDone=false;
+function goPage(n,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById(PG[n]).classList.add('active');
+  el.classList.add('active');
+  if(n==='analytics'&&!aiDone){aiDone=true;setTimeout(initAnalytics,80);}
+  if(n==='alerts') renderAlertsPage();
+}
+
+// TOAST
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// STATE
+const state = {
+  readings: {temp:34.2, hum:68, pres:1013, co2:1420, aqi:87, lux:74.2},
+  thresholds: {tempWarn:30,tempCrit:34,co2Warn:1000,co2Crit:1400,aqiWarn:75,aqiCrit:120,humMin:40,humMax:85,presMin:1000},
+  activeAlerts: [],
+  resolvedAlerts: [
+    {id:'hum', icon:'💧',name:'Humidity Alert',      node:'A6',level:'warning', desc:'Humidity dropped to 36% — below minimum 40%. Irrigation auto-triggered.',time:'08:14:22',resolvedAt:'08:31:05'},
+    {id:'pres',icon:'🔵',name:'Low Pressure Alert',  node:'A6',level:'warning', desc:'Barometric pressure at 997 hPa — possible storm front detected.',       time:'06:50:11',resolvedAt:'07:42:38'},
+    {id:'aqi', icon:'🌫️',name:'Poor Air Quality',    node:'A6',level:'critical',desc:'PM2.5 spiked to 138 µg/m³ during morning dust storm.',                  time:'05:30:00',resolvedAt:'06:18:44'},
+    {id:'temp',icon:'🌡️',name:'Extreme Temperature', node:'A6',level:'critical',desc:'Temperature reached 37.4 °C. Crop stress mitigated by shade net.',      time:'13:22:47',resolvedAt:'14:05:13'},
+    {id:'co2', icon:'💨',name:'High CO₂ Warning',    node:'A6',level:'warning', desc:'CO₂ at 1185 ppm — manual ventilation opened greenhouse vents.',          time:'11:08:33',resolvedAt:'11:34:59'},
+    {id:'hum2',icon:'💧',name:'High Humidity Alert', node:'A6',level:'warning', desc:'Humidity reached 88%. Dehumidifier activated.',                          time:'02:15:00',resolvedAt:'03:40:22'},
+  ],
+  readingHistory: [],
+  exportType: 'full',
+};
+
+const OPTIMAL = {
+  temp:{min:20,max:34}, hum:{min:40,max:85}, co2:{min:0,max:1400},
+  aqi:{min:0,max:120}, pres:{min:1000,max:1040}, lux:{min:0,max:100}
+};
+
+const ALERT_DEFS = {
+  co2: {id:'co2', icon:'💨',name:'High CO₂',           node:'A6'},
+  temp:{id:'temp',icon:'🌡️',name:'Extreme Temperature', node:'A6'},
+  aqi: {id:'aqi', icon:'🌫️',name:'Poor Air Quality',    node:'A6'},
+  hum: {id:'hum', icon:'💧',name:'Humidity Alert',       node:'A6'},
+  pres:{id:'pres',icon:'🔵',name:'Low Pressure Alert',   node:'A6'},
+};
+
+// ALERT ENGINE
+function getAlertStatus(r,thr){
+  const alerts=[], now=new Date().toLocaleTimeString('en-IN',{hour12:false});
+  if(r.temp>thr.tempCrit) alerts.push({...ALERT_DEFS.temp,level:'critical',desc:`${r.temp.toFixed(1)} °C exceeds critical threshold of ${thr.tempCrit} °C.`,time:now});
+  else if(r.temp>thr.tempWarn) alerts.push({...ALERT_DEFS.temp,level:'warning',desc:`${r.temp.toFixed(1)} °C exceeds warning threshold of ${thr.tempWarn} °C.`,time:now});
+  if(r.co2>thr.co2Crit) alerts.push({...ALERT_DEFS.co2,level:'critical',desc:`CO₂ at ${r.co2.toFixed(0)} ppm — exceeds critical ${thr.co2Crit} ppm.`,time:now});
+  else if(r.co2>thr.co2Warn) alerts.push({...ALERT_DEFS.co2,level:'warning',desc:`CO₂ at ${r.co2.toFixed(0)} ppm — above safe ${thr.co2Warn} ppm.`,time:now});
+  if(r.aqi>thr.aqiCrit) alerts.push({...ALERT_DEFS.aqi,level:'critical',desc:`PM2.5 at ${r.aqi.toFixed(0)} µg/m³ — critical level.`,time:now});
+  else if(r.aqi>thr.aqiWarn) alerts.push({...ALERT_DEFS.aqi,level:'warning',desc:`PM2.5 at ${r.aqi.toFixed(0)} µg/m³ — moderate level.`,time:now});
+  if(r.hum<thr.humMin) alerts.push({...ALERT_DEFS.hum,level:'warning',desc:`Humidity at ${r.hum.toFixed(0)}% — below minimum ${thr.humMin}%.`,time:now});
+  else if(r.hum>thr.humMax) alerts.push({...ALERT_DEFS.hum,level:'warning',desc:`Humidity at ${r.hum.toFixed(0)}% — above maximum ${thr.humMax}%.`,time:now});
+  if(r.pres<thr.presMin) alerts.push({...ALERT_DEFS.pres,level:'warning',desc:`Pressure at ${r.pres.toFixed(0)} hPa — below ${thr.presMin} hPa.`,time:now});
+  return alerts;
+}
+function reconcileAlerts(newAlerts){
+  const newIds=new Set(newAlerts.map(a=>a.id));
+  state.activeAlerts.forEach(a=>{if(!newIds.has(a.id))state.resolvedAlerts.unshift({...a,resolvedAt:new Date().toLocaleTimeString('en-IN',{hour12:false})});});
+  state.activeAlerts=newAlerts;
+  updateAlertUI();
+}
+function updateAlertUI(){
+  const active=state.activeAlerts;
+  const total=active.length,critical=active.filter(a=>a.level==='critical').length,warning=active.filter(a=>a.level==='warning').length;
+  const sb=document.getElementById('sb-alert-count');
+  if(sb){sb.textContent=total;sb.style.display=total>0?'':'none';}
+  const dashEl=document.getElementById('dash-active-alerts'),dashCnt=document.getElementById('dash-alert-cnt');
+  if(dashCnt) dashCnt.textContent=total;
+  if(dashEl){
+    dashEl.innerHTML=active.length===0
+      ?'<div style="text-align:center;padding:14px 0;color:#6b7280;font-size:12px;">✅ All readings normal</div>'
+      :active.map(a=>`<div class="ait ${a.level==='critical'?'aic':'aiw'}"><div class="aiic">${a.icon}</div><div><div class="aitrow"><span class="ain">${a.name}</span><span class="ptt ${a.level==='critical'?'ptc':'ptw'}">${a.level}</span></div><div class="aid">${a.desc}</div><div class="aitm">${a.time} · Node ${a.node}</div></div></div>`).join('');
+  }
+  document.getElementById('cnt-critical').textContent=critical;
+  document.getElementById('cnt-warning').textContent=warning;
+  document.getElementById('cnt-resolved').textContent=state.resolvedAlerts.length;
+}
+function renderAlertsPage(){
+  const aList=document.getElementById('active-alerts-list'),rList=document.getElementById('resolved-alerts-list');
+  if(aList) aList.innerHTML=state.activeAlerts.length===0
+    ?'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;background:var(--card);border-radius:12px;">✅ No active alerts.</div>'
+    :state.activeAlerts.map(a=>`<div class="acf ${a.level==='critical'?'cr':'wn'}">${a.level==='critical'?'<div class="acfpulse"></div>':''}<div class="acfi" style="background:rgba(${a.level==='critical'?'239,68,68':'245,158,11'},0.11)">${a.icon}</div><div><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span class="acftit">${a.name}</span><span class="ptt ${a.level==='critical'?'ptc':'ptw'}">${a.level}</span></div><div class="acfdes">${a.desc}</div><div class="acfft"><span class="acftm">⏱ ${a.time}</span><span class="acfnd">Node ${a.node}</span></div></div></div>`).join('');
+  if(rList) rList.innerHTML=state.resolvedAlerts.length===0
+    ?'<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px;background:var(--card);border-radius:12px;">No resolved alerts yet.</div>'
+    :state.resolvedAlerts.map(a=>`<div class="acf res"><div class="acfi" style="background:rgba(59,130,246,0.1)">${a.icon}</div><div><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><span class="acftit">${a.name}</span><span class="ptt pti">Resolved</span></div><div class="acfdes">${a.desc}</div><div class="acfft"><span class="acftm">✔ Resolved ${a.resolvedAt}</span><span class="acfnd">Node ${a.node}</span></div></div></div>`).join('');
+}
+
+// SENSOR SIMULATION
+const HRS=Array.from({length:24},(_,i)=>`${String(i).padStart(2,'0')}:00`);
+function rnd(b,r){return +(b+(Math.random()-.5)*r*2).toFixed(1);}
+function refreshSensors(){
+  const r=state.readings;
+  r.temp=rnd(34.2,1.8);r.hum=rnd(68,4);r.pres=rnd(1013,2);r.co2=rnd(1420,60);r.aqi=rnd(87,10);r.lux=rnd(74.2,3);
+  state.readingHistory.push({...r,ts:new Date().toLocaleTimeString('en-IN',{hour12:false})});
+  if(state.readingHistory.length>288) state.readingHistory.shift();
+  ['temp','hum','pres','co2','aqi','lux'].forEach(k=>{
+    const el=document.getElementById('v-'+k);
+    if(el) el.textContent=k==='lux'||k==='temp'?r[k].toFixed(1):Math.round(r[k]);
+  });
+  ['temp','hum','pres','co2','aqi','lux'].forEach(k=>{
+    const el=document.getElementById('sd-'+k);
+    if(el){const v=k==='lux'||k==='temp'?r[k].toFixed(1):Math.round(r[k]);el.childNodes[0].textContent=v;}
+  });
+  const gauges={temp:{el:'g-temp',min:0,max:50},hum:{el:'g-hum',min:0,max:100},pres:{el:'g-pres',min:990,max:1040},co2:{el:'g-co2',min:400,max:2000},aqi:{el:'g-aqi',min:0,max:300},lux:{el:'g-lux',min:0,max:120}};
+  Object.entries(gauges).forEach(([k,g])=>{
+    const el=document.getElementById(g.el);
+    if(el){const pct=Math.min(100,Math.max(0,(r[k]-g.min)/(g.max-g.min)*100));el.style.width=pct+'%';}
+  });
+  reconcileAlerts(getAlertStatus(r,state.thresholds));
+  updateRawTable();
+}
+// setInterval(refreshSensors,3000);
+// refreshSensors();
+
+async function updateRawTable(){
+  const tb=document.getElementById('rtbl'); if(!tb) return;
+  try{
+    const res=await fetch('/history');
+    const rows=await res.json();
+    if(!rows.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:#9ca3af">No data yet</td></tr>';return;}
+    tb.innerHTML=rows.map(r=>{
+      const temp=parseFloat(r.temp)||0;
+      const status=temp>state.thresholds.tempCrit?'Critical':temp>state.thresholds.tempWarn?'Warning':'Normal';
+      return `<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px">${r.timestamp||'—'}</td>
+        <td style="color:#dc2626;font-family:'DM Mono',monospace">${r.temp}</td>
+        <td style="color:#2563eb;font-family:'DM Mono',monospace">${r.humidity}</td>
+        <td style="color:#d97706;font-family:'DM Mono',monospace">${r.co2}</td>
+        <td style="color:#4f46e5;font-family:'DM Mono',monospace">${r.aqi}</td>
+        <td style="font-family:'DM Mono',monospace">${r.pressure}</td>
+        <td style="color:#a16207;font-family:'DM Mono',monospace">${r.lux}</td>
+        <td><span class="sbg ${status==='Critical'?'bcc':'bww'}" style="font-size:9px">${status}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(err){console.error('History load error:',err);}
+}
+
+// DASHBOARD CHARTS
+const charts = {};
+
+function mkC(id,data,col,yMin,yMax,lbl,labels=HRS,ptRad=0){
+  const el=document.getElementById(id);if(!el)return;
+  const rgba=col.replace('rgb(','rgba(').replace(')',',0.13)');
+
+  charts[id] = new Chart(el,{type:'line',data:{labels,datasets:[{label:lbl,data,fill:true,borderColor:col,backgroundColor:rgba,borderWidth:2,tension:.42,pointRadius:ptRad,pointBackgroundColor:col,pointHoverRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(10,10,10,.82)',borderColor:'rgba(255,255,255,.07)',borderWidth:1}},
+    scales:{x:{grid:{display:false},ticks:{display:labels===HRS?false:true,font:{size:10.5},color:'#6b7280'}},y:{min:yMin,max:yMax,grid:{color:'rgba(128,128,128,.08)',lineWidth:.8},ticks:{font:{size:10},color:'#9ca3af',maxTicksLimit:4}}},
+    animation:{duration:1100,easing:'easeInOutQuart'}}});
+}
+function rndArr(b,r,n=24){return Array.from({length:n},()=>+(b+(Math.random()-.5)*r*2).toFixed(1));}
+setTimeout(()=>{
+  mkC('c-temp',[],'rgb(239,68,68)',18,42,'°C');
+  mkC('c-hum', rndArr(65,14),'rgb(59,130,246)',30,95,'%');
+  mkC('c-aqi', rndArr(80,24),'rgb(99,102,241)',20,150,'µg/m³');
+  mkC('c-co2', rndArr(1400,180),'rgb(245,158,11)',800,1800,'ppm');
+},100);
+
+// ANALYTICS CHARTS
+const D7=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+function initAnalytics(){
+  mkC('ac-temp',[28,31,33,29,34,36,32],'rgb(239,68,68)',15,42,'°C',D7,4);
+  mkC('ac-hum', [72,65,58,80,62,55,68],'rgb(59,130,246)',30,100,'%',D7,4);
+  mkC('ac-aqi', [65,72,88,55,95,142,87],'rgb(99,102,241)',20,165,'µg/m³',D7,4);
+  mkC('ac-co2', [1080,1180,1320,950,1380,1520,1420],'rgb(245,158,11)',700,1700,'ppm',D7,4);
+  const hmc=document.getElementById('hmc');
+  if(hmc){const v=Array.from({length:24},(_,i)=>i<6||i>19?Math.random()*1.5:i<9||i>17?10+Math.random()*30:40+Math.random()*58);const mx=Math.max(...v);hmc.innerHTML=v.map(x=>{const n=x/mx;const c=n<.33?`rgba(59,130,246,${.2+n*.5})`:n<.66?`rgba(234,179,8,${.4+n*.4})`:`rgba(239,68,68,${.5+n*.45})`;return`<div class="hme" style="background:${c}"></div>`;}).join('');}
+  mkC('ac-light',Array.from({length:24},(_,i)=>i<6||i>19?.1:i<9||i>17?10+Math.random()*20:50+Math.random()*45),'rgb(234,179,8)',0,100,'klx');
+}
+
+// SETTINGS
+const STABS=['s-alert-rules','s-display','s-data'];
+function setST(el,id){document.querySelectorAll('.sni').forEach(s=>s.classList.remove('active'));STABS.forEach(t=>{const d=document.getElementById(t);if(d)d.style.display='none';});el.classList.add('active');const t=document.getElementById(id);if(t)t.style.display='block';}
+function applyThresholds(){state.thresholds.tempWarn=+document.getElementById('thr-temp-warn').value;state.thresholds.tempCrit=+document.getElementById('thr-temp-crit').value;state.thresholds.co2Warn=+document.getElementById('thr-co2-warn').value;state.thresholds.co2Crit=+document.getElementById('thr-co2-crit').value;state.thresholds.aqiWarn=+document.getElementById('thr-aqi-warn').value;state.thresholds.aqiCrit=+document.getElementById('thr-aqi-crit').value;state.thresholds.humMin=+document.getElementById('thr-hum-min').value;state.thresholds.humMax=+document.getElementById('thr-hum-max').value;state.thresholds.presMin=+document.getElementById('thr-pres-min').value;reconcileAlerts(getAlertStatus(state.readings,state.thresholds));toast('✓ Alert rules applied.');}
+function setTheme(theme,el){document.documentElement.setAttribute('data-theme',theme);document.querySelectorAll('.theme-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active');}
+function applyDisplay(){toast('✓ Display settings applied.');}
+
+// EXPORT
+function selectExport(type){
+  state.exportType=type;
+  document.querySelectorAll('.export-opt-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('exp-'+type).classList.add('sel');
+}
+
+function exportPDF(){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('en-IN',{hour12:false});
+  const r=state.readings, thr=state.thresholds, type=state.exportType;
+  const GREEN=[46,125,50], DKGREEN=[20,51,27], LTGREEN=[232,245,233];
+  const RED=[185,28,28], AMBER=[180,83,9], BLUE=[30,64,175], PURPLE=[109,40,217];
+  const GRAY=[107,114,128], DGRAY=[31,41,55], LGRAY=[249,250,251];
+  function header(title,subtitle){
+    doc.setFillColor(...DKGREEN); doc.rect(0,0,210,34,'F');
+    doc.setFillColor(...GREEN); doc.rect(0,30,210,4,'F');
+    doc.setFillColor(...GREEN); doc.roundedRect(14,7,20,20,4,4,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
+    doc.text('AG',18.5,20);
+    doc.setFontSize(15); doc.text('KissanRitu Smart Agriculture Station',38,14);
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(180,220,185);
+    doc.text(title,38,20);
+    doc.setFontSize(8); doc.text(`Node A6  |  Lohia Farms, Maharashtra  |  ${dateStr}  ${timeStr}`,38,26);
+    doc.setFillColor(...GREEN); doc.roundedRect(148,8,48,10,2,2,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(subtitle,172,14.5,{align:'center'});
+  }
+  function secTitle(text,y){
+    doc.setFillColor(...LTGREEN); doc.rect(14,y-5,182,9,'F');
+    doc.setDrawColor(...GREEN); doc.setLineWidth(0.3); doc.line(14,y-5,14,y+4);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...DKGREEN);
+    doc.text(text.toUpperCase(),18,y); return y+11;
+  }
+  function badge(text,color,x,y,w=32){
+    doc.setFillColor(...color); doc.roundedRect(x,y-3.5,w,5.5,1.5,1.5,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(text,x+w/2,y,{align:'center'}); doc.setFont('helvetica','normal');
+  }
+  function statusColor(s){return s==='CRITICAL'?RED:s==='WARNING'?AMBER:GREEN;}
+  function tRow(cols,y,even,widths,colors=[]){
+    if(even){doc.setFillColor(...LGRAY);doc.rect(14,y-4,182,8,'F');}
+    cols.forEach((txt,i)=>{
+      const x=14+widths.slice(0,i).reduce((a,b)=>a+b,0);
+      doc.setFont('helvetica',i===0?'bold':'normal');
+      doc.setFontSize(8.5); doc.setTextColor(...(colors[i]||DGRAY));
+      doc.text(String(txt??'—'),x+2,y);
+    });
+  }
+  function footer(){
+    const p=doc.internal.getNumberOfPages();
+    for(let i=1;i<=p;i++){
+      doc.setPage(i); doc.setFillColor(...DKGREEN); doc.rect(0,286,210,11,'F');
+      doc.setTextColor(150,200,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
+      doc.text('KissanRitu · Lohia Farms, Maharashtra · ESP32 Node A6 v2.4.1',14,293);
+      doc.text(`Page ${i} of ${p}  |  ${dateStr}`,196,293,{align:'right'});
+    }
+  }
+  if(type==='full'){
+    header('Full Station Report — Sensors + Alerts + Analytics + Recommendations','FULL REPORT');
+    let y=42;
+    doc.setFillColor(232,245,233); doc.roundedRect(14,y,182,20,3,3,'F');
+    doc.setDrawColor(...GREEN); doc.setLineWidth(0.3); doc.roundedRect(14,y,182,20,3,3,'S');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...DKGREEN);
+    doc.text('EXECUTIVE SUMMARY',17,y+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DGRAY);
+    doc.text(`Status: OPERATIONAL  |  Active Alerts: ${state.activeAlerts.length}  |  Uptime: 99.8%  |  Sync: ${timeStr}  |  Battery: 87%`,17,y+13);
+    doc.text(`Crop Health Score: 72/100 (Moderate Risk)  |  Action Required: Irrigation +15%, Improve CO₂ ventilation`,17,y+18);
+    y+=26;
+    y=secTitle('Current Sensor Readings',y);
+    const sRows=[
+      ['Temperature','DHT22 · Ch.1',`${r.temp.toFixed(1)} °C`,r.temp>thr.tempCrit?'CRITICAL':r.temp>thr.tempWarn?'WARNING':'NORMAL'],
+      ['Humidity','DHT22 · Ch.2',`${Math.round(r.hum)} %`,(r.hum<thr.humMin||r.hum>thr.humMax)?'WARNING':'NORMAL'],
+      ['Air Pressure','BMP280 · Ch.4',`${Math.round(r.pres)} hPa`,r.pres<thr.presMin?'WARNING':'NORMAL'],
+      ['CO₂ Level','MQ-135 · Ch.3',`${Math.round(r.co2)} ppm`,r.co2>thr.co2Crit?'CRITICAL':r.co2>thr.co2Warn?'WARNING':'NORMAL'],
+      ['AQI / PM2.5','PMS5003 · Ch.5',`${Math.round(r.aqi)} µg/m³`,r.aqi>thr.aqiCrit?'CRITICAL':r.aqi>thr.aqiWarn?'WARNING':'NORMAL'],
+      ['Ambient Light','BH1750 · Ch.6',`${r.lux.toFixed(1)} klx`,'NORMAL'],
+    ];
+    sRows.forEach((row,i)=>{
+      tRow([row[0],row[1],row[2]],y+i*9,i%2===0,[62,72,48]);
+      badge(row[3],statusColor(row[3]),150,y+i*9,36);
+    });
+    y+=sRows.length*9+10;
+    y=secTitle('24-Hour Statistics',y);
+    tRow(['Sensor','Min','Max','Average','Trend'],y,false,[55,28,28,34,57],[GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.setDrawColor(...GREEN); doc.setLineWidth(0.2); doc.line(14,y-1,196,y-1);
+    [['Temperature','22.1 °C','36.8 °C','29.6 °C','↑ +2.3° vs yesterday'],
+     ['Humidity','42 %','81 %','62 %','→ Stable within range'],
+     ['Air Pressure','1005 hPa','1021 hPa','1012 hPa','↓ Slight downward trend'],
+     ['CO₂ Level','840 ppm','1580 ppm','1145 ppm','↑ Elevated — ventilate'],
+     ['AQI / PM2.5','22 µg/m³','142 µg/m³','71 µg/m³','↑ +18% above 7-day avg'],
+     ['Ambient Light','0.3 klx','98.6 klx','51.4 klx','→ Normal seasonal pattern'],
+    ].forEach((row,i)=>tRow(row,y+i*9,i%2===0,[55,28,28,34,57]));
+    y+=6*9+10;
+    y=secTitle('Active Alerts',y);
+    if(state.activeAlerts.length===0){
+      doc.setFillColor(232,245,233); doc.rect(14,y-3,182,11,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...GREEN);
+      doc.text('✓ No active alerts — all readings within safe thresholds.',17,y+5); y+=15;
+    } else {
+      state.activeAlerts.forEach((a,i)=>{
+        const ry=y+i*18;
+        const bg=a.level==='critical'?[255,243,243]:[255,252,237];
+        const bc=a.level==='critical'?RED:AMBER;
+        doc.setFillColor(...bg); doc.rect(14,ry-4,182,15,'F');
+        doc.setFillColor(...bc); doc.rect(14,ry-4,3,15,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...bc);
+        doc.text(a.name,20,ry+2);
+        badge(a.level.toUpperCase(),bc,155,ry+2,35);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...DGRAY);
+        doc.text(a.desc,20,ry+8);
+        doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        doc.text(`Triggered: ${a.time}  ·  Node ${a.node}`,20,ry+13);
+      });
+      y+=state.activeAlerts.length*18+8;
+    }
+    y=secTitle('Resolved Alerts — This Session',y);
+    tRow(['Alert Name','Level','Node','Triggered','Resolved'],y,false,[60,24,14,28,76],[GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.line(14,y-1,196,y-1);
+    state.resolvedAlerts.forEach((a,i)=>{
+      tRow([a.name,a.level,a.node,a.time,a.resolvedAt||'—'],y+i*9,i%2===0,[60,24,14,28,76],[DGRAY,a.level==='critical'?RED:AMBER,GRAY,GRAY,GREEN]);
+    });
+    y+=state.resolvedAlerts.length*9+10;
+    doc.addPage(); y=14;
+    doc.setFillColor(...DKGREEN); doc.rect(0,0,210,8,'F');
+    doc.setTextColor(150,200,160); doc.setFontSize(8); doc.setFont('helvetica','italic');
+    doc.text('KissanRitu Full Report — continued',14,5.5);
+    y=18;
+    y=secTitle('7-Day Trend Summary',y);
+    const D7=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const tData=[28,31,33,29,34,36,32];
+    const barW=17,barMaxH=35,maxT=36;
+    tData.forEach((val,i)=>{
+      const x=14+i*(barW+4),bh=Math.round((val/maxT)*barMaxH);
+      const c=val>34?RED:val>30?AMBER:GREEN;
+      doc.setFillColor(...c); doc.rect(x,y+barMaxH-bh,barW,bh,'F');
+      doc.setFillColor(230,238,231); doc.rect(x,y,barW,barMaxH-bh,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...c);
+      doc.text(`${val}°`,x+barW/2,y+barMaxH-bh-2,{align:'center'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      doc.text(D7[i],x+barW/2,y+barMaxH+5,{align:'center'});
+    });
+    y+=barMaxH+14;
+    y=secTitle('Crop Recommendations',y);
+    [['HIGH','Irrigation','Increase by 15% — sustained high temperatures causing soil moisture deficit'],
+     ['HIGH','Ventilation','Open greenhouse vents — CO₂ averaging 1145 ppm, peaks at 1580 ppm'],
+     ['MEDIUM','Shade Net','Deploy 30% shade net 10:00–16:00 during peak solar hours'],
+     ['MEDIUM','Pest Monitoring','Increase inspection frequency — elevated AQI stresses plants'],
+     ['LOW','Fertilizer','Current N-P-K schedule adequate — humidity within acceptable range'],
+     ['LOW','Soil Testing','Recommended monthly — last test 18 days ago'],
+    ].forEach((rec,i)=>{
+      const ry=y+i*10;
+      if(i%2===0){doc.setFillColor(...LGRAY);doc.rect(14,ry-4,182,9,'F');}
+      badge(rec[0],rec[0]==='HIGH'?RED:rec[0]==='MEDIUM'?AMBER:GREEN,14,ry,20);
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DGRAY);
+      doc.text(rec[1],38,ry);
+      doc.setFont('helvetica','normal'); doc.setTextColor(...GRAY);
+      doc.text(rec[2],70,ry);
+    });
+  } else if(type==='sensors'){
+    header('Sensor Data Report — Current Readings + 24h History Log','SENSOR DATA');
+    let y=42;
+    doc.setFillColor(20,51,27); doc.roundedRect(14,y,182,22,3,3,'F');
+    doc.setTextColor(150,220,160); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('NODE A6  —  ONLINE',17,y+8);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(120,180,130);
+    doc.text('ESP32-S3  ·  Main Orchard, Lohia Farms  ·  Firmware v2.4.1',17,y+15);
+    y+=28;
+    y=secTitle('Live Sensor Readings — All Channels',y);
+    const sensors=[
+      {name:'Temperature',sensor:'DHT22 · Channel 1',val:`${r.temp.toFixed(1)}`,unit:'°C',min:'22.1',max:'36.8',avg:'29.4',col:RED,status:r.temp>thr.tempCrit?'CRITICAL':r.temp>thr.tempWarn?'WARNING':'NORMAL'},
+      {name:'Humidity',sensor:'DHT22 · Channel 2',val:`${Math.round(r.hum)}`,unit:'%',min:'42',max:'81',avg:'62',col:BLUE,status:(r.hum<thr.humMin||r.hum>thr.humMax)?'WARNING':'NORMAL'},
+      {name:'CO₂ / Gas',sensor:'MQ-135 · Channel 3',val:`${Math.round(r.co2)}`,unit:'ppm',min:'840',max:'1580',avg:'1145',col:AMBER,status:r.co2>thr.co2Crit?'CRITICAL':r.co2>thr.co2Warn?'WARNING':'NORMAL'},
+      {name:'Air Pressure',sensor:'BMP280 · Channel 4',val:`${Math.round(r.pres)}`,unit:'hPa',min:'1005',max:'1021',avg:'1012',col:PURPLE,status:r.pres<thr.presMin?'WARNING':'NORMAL'},
+      {name:'AQI / PM2.5',sensor:'PMS5003 · Channel 5',val:`${Math.round(r.aqi)}`,unit:'µg/m³',min:'22',max:'142',avg:'71',col:[99,102,241],status:r.aqi>thr.aqiCrit?'CRITICAL':r.aqi>thr.aqiWarn?'WARNING':'NORMAL'},
+      {name:'Ambient Light',sensor:'BH1750 · Channel 6',val:`${r.lux.toFixed(1)}`,unit:'klx',min:'0.3',max:'98.6',avg:'51.4',col:[161,98,7],status:'NORMAL'},
+    ];
+    const cw=90, gap=4;
+    sensors.forEach((s,i)=>{
+      const cx=(i%2===0)?14:14+cw+gap, row=Math.floor(i/2), ry=y+row*52;
+      doc.setFillColor(248,252,249); doc.roundedRect(cx,ry,cw,47,3,3,'F');
+      doc.setDrawColor(...s.col); doc.setLineWidth(0.4); doc.roundedRect(cx,ry,cw,47,3,3,'S');
+      doc.setFillColor(...s.col); doc.roundedRect(cx,ry,cw,3.5,1.5,1.5,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...DGRAY);
+      doc.text(s.name,cx+3,ry+11);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+      doc.text(s.sensor,cx+3,ry+17);
+      doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...s.col);
+      doc.text(s.val,cx+3,ry+33);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...GRAY);
+      doc.text(s.unit,cx+3+doc.getStringUnitWidth(s.val)*22/doc.internal.scaleFactor+1,ry+33);
+      doc.setFontSize(7); doc.setTextColor(...GRAY);
+      doc.text(`Min: ${s.min}  Max: ${s.max}  Avg: ${s.avg}`,cx+3,ry+41);
+      badge(s.status,statusColor(s.status),cx+cw-31,ry+9,28);
+    });
+    y+=Math.ceil(sensors.length/2)*52+10;
+    y=secTitle('Raw Data Log — Last 12 Readings',y);
+    const logH=['Timestamp','Temp °C','Hum %','CO₂ ppm','AQI µg/m³','Press hPa','Light klx','Status'];
+    tRow(logH,y,false,[27,18,14,18,19,18,17,51],[GRAY,GRAY,GRAY,GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.setDrawColor(...GREEN); doc.line(14,y-1,196,y-1);
+    const logRows=state.readingHistory.slice(-12).reverse();
+    const fallback=Array.from({length:12},(_,i)=>{const d=new Date(Date.now()-i*30000);return{ts:d.toLocaleTimeString('en-IN',{hour12:false}),temp:+(34.2+(Math.random()-.5)*3.6).toFixed(1),hum:Math.round(68+(Math.random()-.5)*8),co2:Math.round(1420+(Math.random()-.5)*120),aqi:Math.round(87+(Math.random()-.5)*20),pres:Math.round(1013+(Math.random()-.5)*4),lux:+(74.2+(Math.random()-.5)*6).toFixed(1)};});
+    const rows=logRows.length?logRows:fallback;
+    rows.forEach((row,i)=>{
+      const st=row.temp>thr.tempCrit?'CRITICAL':row.temp>thr.tempWarn?'WARNING':'NORMAL';
+      tRow([row.ts,row.temp?.toFixed?row.temp.toFixed(1):row.temp,Math.round(row.hum),Math.round(row.co2),Math.round(row.aqi),Math.round(row.pres),row.lux?.toFixed?row.lux.toFixed(1):row.lux,st],
+        y+i*8,i%2===0,[27,18,14,18,19,18,17,51],[DGRAY,RED,BLUE,AMBER,[99,102,241],DGRAY,[161,98,7],statusColor(st)]);
+    });
+  } else if(type==='alerts'){
+    header('Alerts Report — Active + Resolved Alerts Log with Threshold Reference','ALERTS REPORT');
+    let y=42;
+    const crit=state.activeAlerts.filter(a=>a.level==='critical').length;
+    const warn=state.activeAlerts.filter(a=>a.level==='warning').length;
+    const res=state.resolvedAlerts.length;
+    [[crit,'Critical Active',[255,240,240],RED],[warn,'Warnings Active',[255,253,235],AMBER],[res,'Resolved (Session)',[240,253,244],GREEN],[crit+warn+res,'Total Alerts',[243,244,246],GRAY]].forEach((b,i)=>{
+      const x=14+i*48;
+      doc.setFillColor(...b[2]); doc.roundedRect(x,y,44,22,3,3,'F');
+      doc.setDrawColor(...b[3]); doc.setLineWidth(0.3); doc.roundedRect(x,y,44,22,3,3,'S');
+      doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...b[3]);
+      doc.text(String(b[0]),x+11,y+15);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      doc.text(b[1],x+2,y+20);
+    });
+    y+=30;
+    y=secTitle('Active Alerts — Detailed View',y);
+    if(state.activeAlerts.length===0){
+      doc.setFillColor(232,245,233); doc.roundedRect(14,y-3,182,13,2,2,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...GREEN);
+      doc.text('✓ No active alerts. All sensor readings within configured thresholds.',17,y+5); y+=18;
+    } else {
+      state.activeAlerts.forEach((a,i)=>{
+        const ry=y+i*28;
+        const bc=a.level==='critical'?RED:AMBER;
+        doc.setFillColor(...(a.level==='critical'?[255,239,239]:[255,252,235])); doc.roundedRect(14,ry-4,182,25,2,2,'F');
+        doc.setFillColor(...bc); doc.roundedRect(14,ry-4,4,25,1,1,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...bc);
+        doc.text(`${a.icon} ${a.name}`,21,ry+4);
+        badge(a.level.toUpperCase(),bc,158,ry+3,34);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DGRAY);
+        doc.text(a.desc,21,ry+12);
+        doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        doc.text(`Triggered: ${a.time}  ·  Node: ${a.node}`,21,ry+19);
+      });
+      y+=state.activeAlerts.length*28+8;
+    }
+    y=secTitle('Alert Threshold Reference',y);
+    tRow(['Parameter','Warning Threshold','Critical Threshold','Current Value','Status'],y,false,[45,40,42,30,43],[GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.line(14,y-1,196,y-1);
+    [
+      ['Temperature',`> ${thr.tempWarn} °C`,`> ${thr.tempCrit} °C`,`${r.temp.toFixed(1)} °C`,r.temp>thr.tempCrit?'CRITICAL':r.temp>thr.tempWarn?'WARNING':'NORMAL'],
+      ['CO₂ Level',`> ${thr.co2Warn} ppm`,`> ${thr.co2Crit} ppm`,`${Math.round(r.co2)} ppm`,r.co2>thr.co2Crit?'CRITICAL':r.co2>thr.co2Warn?'WARNING':'NORMAL'],
+      ['AQI PM2.5',`> ${thr.aqiWarn} µg/m³`,`> ${thr.aqiCrit} µg/m³`,`${Math.round(r.aqi)} µg/m³`,r.aqi>thr.aqiCrit?'CRITICAL':r.aqi>thr.aqiWarn?'WARNING':'NORMAL'],
+      ['Humidity Min/Max',`< ${thr.humMin}% / > ${thr.humMax}%`,'—',`${Math.round(r.hum)} %`,(r.hum<thr.humMin||r.hum>thr.humMax)?'WARNING':'NORMAL'],
+      ['Air Pressure',`< ${thr.presMin} hPa`,'—',`${Math.round(r.pres)} hPa`,r.pres<thr.presMin?'WARNING':'NORMAL'],
+    ].forEach((row,i)=>{
+      const stCol=statusColor(row[4]);
+      tRow([row[0],row[1],row[2],row[3]],y+i*9,i%2===0,[45,40,42,30],[DGRAY,AMBER,RED,stCol]);
+      badge(row[4],stCol,168,y+i*9,28);
+    });
+    y+=5*9+10;
+    y=secTitle('Resolved Alerts Log — Session History',y);
+    tRow(['Alert Name','Level','Node','Triggered','Resolved','Duration'],y,false,[52,22,14,24,24,66],[GRAY,GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.line(14,y-1,196,y-1);
+    state.resolvedAlerts.forEach((a,i)=>{
+      let dur='—';
+      try{const t1=a.time.split(':').map(Number),t2=(a.resolvedAt||'00:00:00').split(':').map(Number);const diff=Math.abs((t2[0]*3600+t2[1]*60+t2[2])-(t1[0]*3600+t1[1]*60+t1[2]));dur=`${Math.floor(diff/60)}m ${diff%60}s`;}catch{}
+      tRow([a.name,a.level,a.node,a.time,a.resolvedAt||'—',dur],y+i*9,i%2===0,[52,22,14,24,24,66],[DGRAY,a.level==='critical'?RED:AMBER,GRAY,GRAY,GREEN,DGRAY]);
+    });
+  } else if(type==='summary'){
+    header('Daily Summary Report — Min / Max / Avg Statistics + Events Log','DAILY SUMMARY');
+    let y=42;
+    const today=now.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    doc.setFillColor(20,51,27); doc.roundedRect(14,y,182,13,3,3,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(180,230,185);
+    doc.text(today,17,y+9);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(120,180,130);
+    doc.text('Lohia Farms, Nashik · Node A6 · Main Orchard',140,y+9,{align:'right'});
+    y+=20;
+    y=secTitle('Sensor Statistics — Today',y);
+    tRow(['Sensor','Unit','Min','Max','Average','vs Prev Day','Status'],y,false,[48,12,22,22,26,28,42],[GRAY,GRAY,GRAY,GRAY,GRAY,GRAY,GRAY]);
+    y+=6; doc.line(14,y-1,196,y-1);
+    [
+      {name:'Temperature',unit:'°C',min:'22.1',max:'36.8',avg:'29.6',delta:'↑ +2.3°',status:r.temp>thr.tempCrit?'CRITICAL':r.temp>thr.tempWarn?'WARNING':'NORMAL'},
+      {name:'Humidity',unit:'%',min:'42',max:'81',avg:'62',delta:'↓ -3%',status:'NORMAL'},
+      {name:'CO₂ Level',unit:'ppm',min:'840',max:'1580',avg:'1145',delta:'↑ +95',status:'ELEVATED'},
+      {name:'Air Pressure',unit:'hPa',min:'1005',max:'1021',avg:'1012',delta:'↓ -4',status:'NORMAL'},
+      {name:'AQI / PM2.5',unit:'µg/m³',min:'22',max:'142',avg:'71',delta:'↑ +12',status:'MODERATE'},
+      {name:'Ambient Light',unit:'klx',min:'0.3',max:'98.6',avg:'51.4',delta:'→ ±1.2',status:'NORMAL'},
+      {name:'Wind Speed',unit:'km/h',min:'3.1',max:'22.6',avg:'12.4',delta:'↑ +2.1',status:'NORMAL'},
+      {name:'Rainfall',unit:'mm',min:'0.0',max:'3.2',avg:'1.6',delta:'↑ New',status:'LIGHT RAIN'},
+      {name:'UV Index',unit:'index',min:'0',max:'9.4',avg:'7.2',delta:'↑ +0.8',status:'HIGH'},
+    ].forEach((s,i)=>{
+      const sc=s.status==='NORMAL'?GREEN:s.status==='LIGHT RAIN'?BLUE:s.status.includes('CRITICAL')?RED:AMBER;
+      tRow([s.name,s.unit,s.min,s.max,s.avg,s.delta],y+i*9,i%2===0,[48,12,22,22,26,28],[DGRAY,GRAY,BLUE,RED,GREEN,s.delta.includes('↑')?RED:s.delta.includes('↓')?BLUE:GRAY]);
+      badge(s.status,sc,170,y+i*9,26);
+    });
+    y+=9*9+10;
+    y=secTitle('Hourly Temperature Profile — Today',y);
+    const hourlyT=[23.1,22.8,22.4,22.1,22.3,23.6,25.4,27.8,30.2,32.1,33.5,34.8,35.9,36.8,36.2,35.4,34.1,32.8,31.2,29.7,28.4,27.1,25.9,24.6];
+    const hrW=7.2, hrH=32, hrMin=Math.min(...hourlyT), hrMax=Math.max(...hourlyT);
+    hourlyT.forEach((val,i)=>{
+      const x=14+i*(hrW+0.2);
+      const bh=Math.round(((val-hrMin)/(hrMax-hrMin))*hrH)+3;
+      const frac=(val-hrMin)/(hrMax-hrMin);
+      const c=frac<0.35?BLUE:frac<0.65?GREEN:frac<0.85?AMBER:RED;
+      doc.setFillColor(...c); doc.rect(x,y+hrH-bh,hrW,bh,'F');
+      doc.setFillColor(235,242,236); doc.rect(x,y,hrW,hrH-bh,'F');
+      if(i%6===0){doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...GRAY);doc.text(`${String(i).padStart(2,'0')}h`,x,y+hrH+4.5);}
+    });
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...RED);
+    doc.text(`Peak: ${hrMax}°C`,140,y+hrH-hrH-2);
+    doc.setTextColor(...BLUE); doc.text(`Low: ${hrMin}°C`,165,y+hrH-hrH-2);
+    y+=hrH+14;
+    y=secTitle('Daily Crop Health Assessment',y);
+    doc.setFillColor(255,251,235); doc.roundedRect(14,y,182,42,3,3,'F');
+    doc.setDrawColor(...AMBER); doc.setLineWidth(0.3); doc.roundedRect(14,y,182,42,3,3,'S');
+    doc.setFillColor(...AMBER); doc.roundedRect(16,y+4,34,34,3,3,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(255,255,255);
+    doc.text('72',33,y+23,{align:'center'});
+    doc.setFontSize(7); doc.text('/100',33,y+30,{align:'center'});
+    doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(...AMBER);
+    doc.text('Moderate Risk — Action Required',54,y+12);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...DGRAY);
+    doc.text('Crop stress indicators are elevated. Temperature and CO₂ remain above optimal ranges.',54,y+20);
+    doc.setFontSize(8); doc.setTextColor(...RED);
+    doc.text('• Increase irrigation by 15%  • Improve ventilation (CO₂ avg 1145 ppm)',54,y+28);
+    doc.text('• Monitor for heat stress between 11:00–16:00  • Check drip lines for blockage',54,y+35);
+  }
+  footer();
+  const fname=`KissanRitu_${type.charAt(0).toUpperCase()+type.slice(1)}_Report_${now.toISOString().slice(0,10)}.pdf`;
+  doc.save(fname);
+  toast(`📥 PDF saved: ${fname}`);
+}
+function updateCharts(newData){
+  if(!charts['c-temp']) return;
+  charts['c-temp'].data.datasets[0].data.push(parseFloat(newData.temp));
+  charts['c-hum'].data.datasets[0].data.push(parseFloat(newData.humidity));
+  charts['c-aqi'].data.datasets[0].data.push(parseFloat(newData.aqi));
+  charts['c-co2'].data.datasets[0].data.push(parseFloat(newData.co2));
+  Object.values(charts).forEach(chart=>{
+    if(chart.data.datasets[0].data.length>24) chart.data.datasets[0].data.shift();
+    chart.update();
+  });
+}
+function updateBadges(r){
+  function setBadge(id, value, range){
+    const el = document.getElementById(id);
+    if(!el) return;
+
+    if(value < range.min){
+      el.textContent = "⚠ LOW";
+      el.className = "sbg bww";
+    }
+    else if(value > range.max){
+      el.textContent = "⚡ HIGH";
+      el.className = "sbg bcc";
+    }
+    else{
+      el.textContent = "✔ NORMAL";
+      el.className = "sbg bss";
+    }
+  }
+
+  setBadge("b-temp", r.temp, OPTIMAL.temp);
+  setBadge("b-hum", r.hum, OPTIMAL.hum);
+  setBadge("b-co2", r.co2, OPTIMAL.co2);
+  setBadge("b-aqi", r.aqi, OPTIMAL.aqi);
+  setBadge("b-pres", r.pres, OPTIMAL.pres);
+  setBadge("b-lux", r.lux, OPTIMAL.lux);
+}
+
+</script>
+
+</body>
+</html>

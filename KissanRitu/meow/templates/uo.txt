@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Sensor Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2 style="text-align:center;">ESP32 Air Quality Dashboard</h2>
+    <canvas id="sensorChart" width="800" height="400"></canvas>
+    <script>
+        const data = {{ data | safe }};
+        const labels = data.map(row => row[8]); // timestamp
+        const co2 = data.map(row => row[0]);
+        const pm1 = data.map(row => row[1]);
+        const pm25 = data.map(row => row[2]);
+        const pm10 = data.map(row => row[3]);
+
+        const ctx = document.getElementById('sensorChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'CO2 (ppm)', data: co2, borderColor: 'orange', fill: false },
+                    { label: 'PM1', data: pm1, borderColor: 'red', fill: false },
+                    { label: 'PM2.5', data: pm25, borderColor: 'green', fill: false },
+                    { label: 'PM10', data: pm10, borderColor: 'blue', fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'Timestamp' } },
+                    y: { title: { display: true, text: 'Value' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
